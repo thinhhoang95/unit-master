@@ -136,9 +136,6 @@
 
     });
 
-    // To initially run the function:
-    $(window).resize();
-
     // First-round abbreviation conversion table
     var abbrGroup = {
         "acre": "4046.86*m^2",
@@ -175,12 +172,15 @@
         "st": 6.35029318,
         "lb": 0.453592,
         "lbs": 0.453592,
-        "oz": 0.0283495
+        "oz": 0.0283495,
+        "kg": 1
     };
 
-    var temperatureDerivativeGroup = {"oC": 1,
+    var temperatureDerivativeGroup = {
+        "oC": 1,
         "oF": 5/9,
-        "K": 1};
+        "K": 1
+    };
 
     var timeGroup = {
         "h": 3600,
@@ -188,7 +188,8 @@
         "hrs": 3600,
         "min": 60,
         "us": 1e-6,
-        "ns": 1e-9
+        "ns": 1e-9,
+        "s": 1
     };
 
     function convertTemperatureToK(baseUnit, T)
@@ -203,7 +204,7 @@
 
     function parseUnit()
     {
-        var str = "km^2*m^2";
+        var str = "bar*ft/s";
         var node = math.parse(str);
 
         var firstRoundTransform = node.transform(function (node, path, parent) {
@@ -211,7 +212,11 @@
                 if(node.name in abbrGroup)
                 {
                     return new math.parse(abbrGroup[node.name]);
+                } else {
+                    return node;
                 }
+            } else {
+                return node;
             }
         });
 
@@ -229,6 +234,8 @@
                 // Second-round time to s conversion
                 else if (node.name in timeGroup)
                     return new math.expression.node.ConstantNode(timeGroup[node.name]);
+                else
+                    return node;
             }
             else {
                 return node;
@@ -237,7 +244,10 @@
         console.log(secondRoundTransform.toString());
     }
 
+    // To initially run the function:
+    $(window).resize();
     parseUnit();
+
 </script>
 </body>
 </html>
