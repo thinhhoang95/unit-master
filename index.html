@@ -1,0 +1,243 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>EngineeringX - Unit converter, engineering table lookups</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="css/reset.css">
+
+    <link rel="stylesheet" href="css/material.min.css">
+    <script src="js/material.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
+    <link rel="stylesheet" href="css/default.css">
+
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/math.min.js"></script>
+
+    <style>
+        .page-content{
+            display: flex;
+            flex-direction: column;
+        }
+        .page-inner-content{
+            display: flex;
+            flex: 1 0 auto;
+        }
+        .page-inner-footer{
+            display: flex;
+            flex: 0 0 auto;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.71);
+            color: #FFFFFF;
+            height: 32px;
+            padding-left: 24px;
+            padding-top: 8px;
+            padding-bottom: 8px;
+        }
+        .demo-card-wide.mdl-card {
+            height: 300px;
+        }
+        .demo-card-wide > .mdl-card__menu {
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+<!-- Header and sidebar navigation !-->
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+    <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+            <!-- Title -->
+            <span class="mdl-layout-title">EngineeringX</span>
+            <!-- Add spacer, to align navigation to the right -->
+            <div class="mdl-layout-spacer"></div>
+            <!-- Navigation. We hide it in small screens. -->
+            <nav class="mdl-navigation mdl-layout--large-screen-only">
+                <a class="mdl-navigation__link" href="">Unit conversion</a>
+                <a class="mdl-navigation__link" href="">Data lookup</a>
+                <a class="mdl-navigation__link" href="">Help</a>
+            </nav>
+        </div>
+    </header>
+    <div class="mdl-layout__drawer">
+        <span class="mdl-layout-title">EngineeringX</span>
+        <nav class="mdl-navigation">
+            <a class="mdl-navigation__link" href="">Unit conversion</a>
+            <a class="mdl-navigation__link" href="">Data lookup</a>
+            <a class="mdl-navigation__link" href="">Help</a>
+        </nav>
+    </div>
+    <main class="mdl-layout__content">
+        <div class="page-content">
+            <!-- Begin of Page content !-->
+            <div class="page-inner-content">
+
+                <div class="mdl-grid" style="width: 100%">
+
+                    <div class="demo-card-wide mdl-card mdl-shadow--2dp mdl-cell mdl-cell--4-col-desktop mdl-cell--6-col-tablet mdl-cell--12-col-phone">
+                        <div class="mdl-card__title"><span style="font-family: 'Roboto Light',serif; font-size: 18pt">Convert from</span></div>
+                        <div class="mdl-card__supporting-text">
+                            <div class="mdl-textfield mdl-js-textfield" style="width: 100%">
+                                <input class="mdl-textfield__input" type="text" id="base_val">
+                                <label class="mdl-textfield__label" for="base_val">Base value</label>
+                            </div>
+                            <div class="mdl-textfield mdl-js-textfield" style="width: 100%">
+                                <input class="mdl-textfield__input" type="text" id="base_unit">
+                                <label class="mdl-textfield__label" for="base_unit">Base unit</label>
+                            </div>
+                            <div style="height: 16px"></div>
+                            <a class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+                                PARSE
+                            </a>
+                        </div>
+
+                    </div>
+
+                    <div class="demo-card-wide mdl-card mdl-shadow--2dp mdl-cell mdl-cell--4-col-desktop mdl-cell--6-col-tablet mdl-cell--12-col-phone">
+                        <div class="mdl-card__title"><span style="font-family: 'Roboto Light',serif; font-size: 18pt">Convert to</span></div>
+                        <div class="mdl-card__supporting-text">
+                            <div class="mdl-textfield mdl-js-textfield" style="width: 100%">
+                                <input class="mdl-textfield__input" type="text" id="dest_val">
+                                <label class="mdl-textfield__label" for="dest_val">Destination value</label>
+                            </div>
+                            <div class="mdl-textfield mdl-js-textfield" style="width: 100%">
+                                <input class="mdl-textfield__input" type="text" id="dest_unit">
+                                <label class="mdl-textfield__label" for="dest_unit">Destination unit</label>
+                            </div>
+                            <div style="height: 16px"></div>
+                            <a class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+                                PARSE & CONVERT
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="page-inner-footer">
+                <span>Copyright (c) 2017 NeuralMetrics SA. Managed by Hoang Dinh Thinh (thinh@neuralmetrics.net).</span>
+            </div>
+            <!-- End of page content !-->
+        </div>
+    </main>
+</div>
+<!-- End of header and sidebar navigation !-->
+
+<script>
+    $(window).resize(function(){
+
+        $('.page-content').css({
+            height: ($(window).height() - 64)
+        });
+
+    });
+
+    // To initially run the function:
+    $(window).resize();
+
+    // First-round abbreviation conversion table
+    var abbrGroup = {
+        "acre": "4046.86*m^2",
+        "Pa": "kg/(m*s^2)",
+        "kPa": "1000*kg/(m*s^2)",
+        "bar": "10^5*kg/(m*s^2)",
+        "atm": "101325*kg/(m*s^2)",
+        "slugs": "143*kg*m/s^2",
+        "slug": "143*kg*m/s^2",
+        "lbf": "4.4482*kg*m/s^2"
+    };
+
+    // Second-round elementary conversion table
+    var lengthGroup = {
+        "m": 1,
+        "km": 1000,
+        "cm": 0.01,
+        "mm": 0.001,
+        "um": 1e-6,
+        "nm": 1e-9,
+        "mi": 1609.34,
+        "yd": 0.9144,
+        "ft": 0.3048,
+        "in": 0.0254,
+        "NM": 1852
+    };
+
+    var massGroup = {
+        "ton": 1000,
+        "tonnes": 1000,
+        "g": 0.001,
+        "mg": 1e-6,
+        "ug": 1e-9,
+        "st": 6.35029318,
+        "lb": 0.453592,
+        "lbs": 0.453592,
+        "oz": 0.0283495
+    };
+
+    var temperatureDerivativeGroup = {"oC": 1,
+        "oF": 5/9,
+        "K": 1};
+
+    var timeGroup = {
+        "h": 3600,
+        "hr": 3600,
+        "hrs": 3600,
+        "min": 60,
+        "us": 1e-6,
+        "ns": 1e-9
+    };
+
+    function convertTemperatureToK(baseUnit, T)
+    {
+        if (baseUnit==="oC")
+            return 273.15 + T;
+        else if (baseUnit==="oF")
+            return (T+459.67)*5/9;
+        else if (baseUnit==="K")
+            return T;
+    }
+
+    function parseUnit()
+    {
+        var str = "km^2*m^2";
+        var node = math.parse(str);
+
+        var firstRoundTransform = node.transform(function (node, path, parent) {
+            if (node.isSymbolNode) {
+                if(node.name in abbrGroup)
+                {
+                    return new math.parse(abbrGroup[node.name]);
+                }
+            }
+        });
+
+        var secondRoundTransform = firstRoundTransform.transform(function (node, path, parent) {
+            if (node.isSymbolNode) {
+                // Second-round length to m conversion
+                if (node.name in lengthGroup)
+                    return new math.expression.node.ConstantNode(lengthGroup[node.name]);
+                // Second-round mass to kg conversion
+                else if (node.name in massGroup)
+                    return new math.expression.node.ConstantNode(massGroup[node.name]);
+                // Second-round temperature's derivative to K conversion
+                else if (node.name in temperatureDerivativeGroup)
+                    return new math.expression.node.ConstantNode(temperatureDerivativeGroup[node.name]);
+                // Second-round time to s conversion
+                else if (node.name in timeGroup)
+                    return new math.expression.node.ConstantNode(timeGroup[node.name]);
+            }
+            else {
+                return node;
+            }
+        });
+        console.log(secondRoundTransform.toString());
+    }
+
+    parseUnit();
+</script>
+</body>
+</html>
